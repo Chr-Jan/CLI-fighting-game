@@ -39,8 +39,6 @@ namespace CLI_fighting_game
                     break;
                 }
 
-                Console.ReadKey();
-
                 // Player Two attacks Player One
                 int damage2 = rnd.Next(1, 10);
                 playerOneHealth -= damage2;
@@ -61,8 +59,6 @@ namespace CLI_fighting_game
                     Console.WriteLine($"{playerTwoName} wins!");
                     break;
                 }
-
-                Console.ReadKey();
             }
 
             Console.ReadKey();
