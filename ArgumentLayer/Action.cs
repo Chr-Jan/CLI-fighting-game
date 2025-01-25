@@ -29,7 +29,7 @@ namespace CLI_fighting_game.ArgumentLayer
             int successChance = Success();
 
             // If the success chance is greater than 80, it's a successful attack
-            if (successChance > 80)
+            if (successChance < 80)
             {
                 Console.WriteLine("Attack successful!");
                 return rnd.Next(5, 20); // Random damage between 1 and 20
@@ -46,7 +46,7 @@ namespace CLI_fighting_game.ArgumentLayer
         {
             int successChance = Success();
 
-            if(successChance > 50)
+            if(successChance < 50)
             {
                 Console.WriteLine("Heal successful!");
                 return rnd.Next(5, 15); // Random heal between 5 and 15
