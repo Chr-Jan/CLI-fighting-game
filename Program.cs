@@ -8,12 +8,11 @@ namespace CLI_fighting_game
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to the CLI Fighting Game!");
-            Console.Write("Enter Player 1's name: ");
-            string playerOneName = Console.ReadLine();
-            Console.Write("Enter Player 2's name: ");
-            string playerTwoName = Console.ReadLine();
+            Console.Write("Enter Players name: ");
+            string playerName = Console.ReadLine();
+            string enemyName = "Goblin";
 
-            Game game = new Game(playerOneName, playerTwoName);
+            Game game = new Game(playerName, enemyName);
             game.StartGame();
         }
     }

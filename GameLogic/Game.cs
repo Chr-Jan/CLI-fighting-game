@@ -5,61 +5,88 @@ namespace CLI_fighting_game.GameLogic
 {
     public class Game
     {
-        private Player playerOne;
-        private Player playerTwo;
+        private Player player;
+        private Enemy enemy;
         private UI ui;
 
-        public Game(string playerOneName, string playerTwoName)
+        public Game(string playerOneName, string enemyName)
         {
-            playerOne = new Player(playerOneName);
-            playerTwo = new Player(playerTwoName);
+            player = new Player(playerOneName);
+            enemy = new Enemy(enemyName);
             ui = new UI();
         }
 
         public void StartGame()
         {
             bool gameOn = true;
+
             while (gameOn)
             {
-                // Display player health
-                ui.DisplayPlayerHealth(playerOne.Name, playerOne.Health);
-                ui.DisplayPlayerHealth(playerTwo.Name, playerTwo.Health);
+                // Display player and enemy health
+                ui.DisplayPlayerHealth(player.Name, player.Health);
+                ui.DisplayPlayerHealth(enemy.Name, enemy.Health);
 
-                // Get player one action
-                string playerOneAction = ui.GetPlayerAction(playerOne.Name);
-                PerformAction(playerOne, playerTwo, playerOneAction);
+                // Get player one's action
+                string playerOneAction = ui.GetPlayerAction(player.Name);
+                PerformAction(player, enemy, playerOneAction);
 
-                if (playerTwo.Health <= 0)
+                if (enemy.Health <= 0)
                 {
-                    ui.DisplayMessage($"{playerOne.Name} wins!");
+                    ui.DisplayMessage($"{player.Name} wins!");
+                    Console.ReadKey();
                     break;
                 }
 
-                // Get player two action
-                string playerTwoAction = ui.GetPlayerAction(playerTwo.Name);
-                PerformAction(playerTwo, playerOne, playerTwoAction);
+                // Enemy decides its action
+                string enemyAction = enemy.DecideAction();
+                ui.DisplayMessage($"{enemy.Name} chooses to {enemyAction}!");
+                PerformAction(enemy, player, enemyAction);
 
-                if (playerOne.Health <= 0)
+                if (player.Health <= 0)
                 {
-                    ui.DisplayMessage($"{playerTwo.Name} wins!");
+                    ui.DisplayMessage($"{enemy.Name} wins!");
+                    Console.ReadKey();
                     break;
                 }
             }
         }
 
-        private void PerformAction(Player player, Player opponent, string action)
+        private void PerformAction(ICharacter actor, ICharacter target, string action)
         {
             switch (action.ToLower())
             {
                 case "attack":
-                    player.Attack(opponent);
+                    if (actor is Player)
+                    {
+                        ui.DisplayMessage($"{actor.Name} attacks {target.Name}!");
+                        int damage = ((Player)actor).PerformAttack(); // Get attack damage from Player
+                        target.ReceiveDamage(damage); // Apply damage to the target
+                    }
+                    else if (actor is Enemy)
+                    {
+                        ui.DisplayMessage($"{actor.Name} attacks {target.Name}!");
+                        int damage = ((Enemy)actor).PerformAttack(); // Get attack damage from Enemy
+                        target.ReceiveDamage(damage); // Apply damage to the target
+                    }
                     break;
+
                 case "heal":
-                    player.Heal();
+                    if (actor is Player)
+                    {
+                        ui.DisplayMessage($"{actor.Name} heals themselves!");
+                        ((Player)actor).Heal();
+                    }
+                    else if (actor is Enemy)
+                    {
+                        ui.DisplayMessage($"{actor.Name} heals themselves!");
+                        ((Enemy)actor).Heal();
+                    }
                     break;
+
                 case "defend":
-                    ui.DisplayMessage($"{player.Name} is defending!");
+                    ui.DisplayMessage($"{actor.Name} is defending!");
                     break;
+
                 default:
                     ui.DisplayMessage("Invalid action. Try again.");
                     break;
